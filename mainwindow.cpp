@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cfg.password="pass";
     Source=make_shared<PQData>(cfg);
     ui->SelectedRun->setValue(1);
+    on_SelectedRun_valueChanged(1);
 }
 
 MainWindow::~MainWindow(){
