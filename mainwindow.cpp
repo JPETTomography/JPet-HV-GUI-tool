@@ -1,3 +1,5 @@
+#include <DataGeneral/Photomultiplier.h>
+#include <DataGeneral/Calibration.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 using namespace std;
@@ -15,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     cfg.username="postgres";
     cfg.password="pass";
     Source=make_shared<PQData>(cfg);
+    ui->SelectedRun->setValue(1);
 }
 
 MainWindow::~MainWindow(){
@@ -22,7 +25,7 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::on_SelectedRun_valueChanged(int arg1){
-    PhmData=make_shared<PhotomultipliersData>(Source,arg1);
     ui->ListOfPhm->clear();
-
+    for(const PhotomultiplierData&item:PhotomultipliersData(Source,arg1).GetList())
+        ui->ListOfPhm->addItem(QString(item.name().c_str()));
 }

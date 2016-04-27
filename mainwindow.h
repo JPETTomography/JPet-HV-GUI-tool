@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <memory>
-#include <DataGeneral/Photomultiplier.h>
-#include <DataGeneral/Calibration.h>
 #include <Postgres/postgres_data.h>
 #include <QMainWindow>
 
@@ -23,8 +21,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-
-    std::shared_ptr<JPetData::PhotomultipliersData> PhmData;
     std::shared_ptr<DataAccess::PQData> Source;
 };
 
