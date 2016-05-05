@@ -57,7 +57,6 @@ const Setup&SetupsModel::GetItem(const size_t i)const{return f_cache[i];}
 FramesModel::FramesModel(const std::shared_ptr<DataAccess::IDataSource>src)
     :QAbstractTableModel(),f_table(src){
     for(const auto&item:f_table.GetList())f_cache.push_back(item);
-    for(const auto&item:f_cache)f_setup_cache.push_back(make_shared<SetupsModel>(item));
 }
 int FramesModel::rowCount(const QModelIndex&) const {
     return f_cache.size();
@@ -76,5 +75,43 @@ QVariant FramesModel::data(const QModelIndex &index, int role) const{
     }
     return QVariant::Invalid;
 }
-shared_ptr<SetupsModel> FramesModel::SetupModel(const int index){return f_setup_cache[index];}
+shared_ptr<SetupsModel> FramesModel::SetupModel(const int index)const{return make_shared<SetupsModel>(f_cache[index]);}
 const Frame&FramesModel::GetItem(const size_t i)const{return f_cache[i];}
+
+
+HVTableModel::HVTableModel(const DataAccess::Factory<JPetSetup::HVconfigEntry>&config,
+        const JPetSetup::Setup&setup,
+        const JPetSetup::Frame&frame,
+        const std::shared_ptr<IDataSource> src
+ ):f_entries(config),f_setup(setup),f_frame(frame),
+    f_phms(src),f_photomultipliers(src){
+    for(const Layer& layer:frame.CreateLayersFactory().GetList())
+        for(const Slot&slot:layer.CreateSlotsFactory().GetList())
+            for(const HVPMConnection&conn:f_phms.BySlotID(slot.id()))
+                if(conn.setup_id()==f_setup.id()){
+                    f_layers.push_back(layer);
+                    f_slots.push_back(slot);
+                    f_connections.push_back(conn);
+                }
+}
+int HVTableModel::rowCount(const QModelIndex &) const{
+    return f_connections.size();
+}
+int HVTableModel::columnCount(const QModelIndex &) const{
+    return 4;
+}
+QVariant HVTableModel::data(const QModelIndex &index, int role) const{
+    if(role == Qt::DisplayRole){
+        switch(index.column()){
+        case 0:
+            return QString::fromStdString(f_layers[index.row()].name());
+        case 1:
+            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).name());
+        case 2:
+            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).description());
+        case 3:
+            return double(0.0);
+        }
+    }
+    return QVariant::Invalid;
+}

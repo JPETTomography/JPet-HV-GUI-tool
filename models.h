@@ -42,11 +42,33 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     const JPetSetup::Frame& GetItem(const size_t index)const;
-    std::shared_ptr<SetupsModel> SetupModel(const int index);
+    std::shared_ptr<SetupsModel> SetupModel(const int index)const;
 private:
     JPetSetup::Frames f_table;
     std::vector<JPetSetup::Frame> f_cache;
     std::vector<std::shared_ptr<SetupsModel>> f_setup_cache;
+};
+
+class HVTableModel : public QAbstractTableModel{
+    Q_OBJECT
+public:
+    HVTableModel(const DataAccess::Factory<JPetSetup::HVconfigEntry>&config,
+            const JPetSetup::Setup&setup,
+            const JPetSetup::Frame&frame,
+            const std::shared_ptr<DataAccess::IDataSource> src
+    );
+    int rowCount(const QModelIndex &parent = QModelIndex()) const ;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+private:
+    DataAccess::Factory<JPetSetup::HVconfigEntry> f_entries;
+    JPetSetup::Setup f_setup;
+    JPetSetup::Frame f_frame;
+    JPetSetup::HVPMConnections f_phms;
+    JPetSetup::Photomultipliers f_photomultipliers;
+    std::vector<JPetSetup::Layer> f_layers;
+    std::vector<JPetSetup::Slot> f_slots;
+    std::vector<JPetSetup::HVPMConnection> f_connections;
 };
 
 #endif // MODELS_H

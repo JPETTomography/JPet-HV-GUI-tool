@@ -6,8 +6,14 @@
 namespace DataAccess{
     class IDataSource;
 }
+namespace JPetSetup{
+    class HVPMConnections;
+    class Photomultipliers;
+}
 class ConfigsModel;
 class FramesModel;
+class SetupsModel;
+class HVTableModel;
 namespace Ui {
     class MainWindow;
 }
@@ -25,6 +31,10 @@ private:
     std::shared_ptr<DataAccess::IDataSource> Source;
     std::shared_ptr<ConfigsModel> configs;
     std::shared_ptr<FramesModel> frames;
+    std::shared_ptr<SetupsModel> setups;
+    std::shared_ptr<JPetSetup::HVPMConnections>phm_conn_factory;
+    std::shared_ptr<JPetSetup::Photomultipliers>phm_factory;
+    std::shared_ptr<HVTableModel> table_model;
 };
 
 #endif // MAINWINDOW_H

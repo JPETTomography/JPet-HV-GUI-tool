@@ -1,11 +1,15 @@
 #include <string>
 #include <DataGeneral/data_access.h>
 #include <Postgres/postgres_data.h>
+#include <JPetData/Detectors.h>
+#include <JPetData/HVconfig.h>
+#include <JPetData/Frames.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "models.h"
 using namespace std;
 using namespace DataAccess;
+using namespace JPetSetup;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
@@ -17,6 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     cfg.username="postgres";
     cfg.password="pass";
     Source=make_shared<PQData>(cfg);
+    phm_factory=make_shared<Photomultipliers>(Source);
+    phm_conn_factory=make_shared<HVPMConnections>(Source);
     configs=make_shared<ConfigsModel>(Source);
     ui->configs->setModel(configs.get());
     frames=make_shared<FramesModel>(Source);
@@ -36,8 +42,10 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::FrameSelect(const QItemSelection &, const QItemSelection &){
-    if(ui->frames->selectionModel()->currentIndex().isValid())
-        ui->Setups->setModel(frames->SetupModel(ui->frames->selectionModel()->currentIndex().row()).get());
+    if(ui->frames->selectionModel()->currentIndex().isValid()){
+        setups=frames->SetupModel(ui->frames->selectionModel()->currentIndex().row());
+        ui->Setups->setModel(setups.get());
+    }
 }
 void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
     if(
@@ -45,6 +53,12 @@ void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
             (ui->Setups->selectionModel()->currentIndex().isValid())&&
             (ui->configs->selectionModel()->currentIndex().isValid())
     ){
-
+        table_model=make_shared<HVTableModel>(
+                    configs->GetItem(ui->configs->selectionModel()->currentIndex().row()).CreateEntriesFactory(),
+                    setups->GetItem(ui->Setups->selectionModel()->currentIndex().row()),
+                    frames->GetItem(ui->frames->selectionModel()->currentIndex().row()),
+                    Source
+                    );
+        ui->curentconfig->setModel(table_model.get());
     }
 }
