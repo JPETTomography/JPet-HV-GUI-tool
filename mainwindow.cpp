@@ -1,11 +1,11 @@
-#include <DataGeneral/Photomultiplier.h>
-#include <DataGeneral/Calibration.h>
+#include <string>
+#include <DataGeneral/data_access.h>
+#include <Postgres/postgres_data.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "models.h"
 using namespace std;
 using namespace DataAccess;
-using namespace Calibration;
-using namespace JPetData;
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
@@ -17,16 +17,34 @@ MainWindow::MainWindow(QWidget *parent) :
     cfg.username="postgres";
     cfg.password="pass";
     Source=make_shared<PQData>(cfg);
-    ui->SelectedRun->setValue(1);
-    on_SelectedRun_valueChanged(1);
+    configs=make_shared<ConfigsModel>(Source);
+    ui->configs->setModel(configs.get());
+    frames=make_shared<FramesModel>(Source);
+    ui->frames->setModel(frames.get());
+    connect(ui->frames->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
+            this,SLOT(FrameSelect(const QItemSelection &, const QItemSelection &)));
+    connect(ui->frames->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
+            this,SLOT(HVTableUpdate(const QItemSelection &, const QItemSelection &)));
+    connect(ui->configs->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
+            this,SLOT(HVTableUpdate(const QItemSelection &, const QItemSelection &)));
+    connect(ui->Setups->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
+            this,SLOT(HVTableUpdate(const QItemSelection &, const QItemSelection &)));
 }
 
 MainWindow::~MainWindow(){
     delete ui;
 }
 
-void MainWindow::on_SelectedRun_valueChanged(int arg1){
-    ui->ListOfPhm->clear();
-    for(const PhotomultiplierData&item:PhotomultipliersData(Source,arg1).GetList())
-        ui->ListOfPhm->addItem(QString(item.name().c_str()));
+void MainWindow::FrameSelect(const QItemSelection &, const QItemSelection &){
+    if(ui->frames->selectionModel()->currentIndex().isValid())
+        ui->Setups->setModel(frames->SetupModel(ui->frames->selectionModel()->currentIndex().row()).get());
+}
+void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
+    if(
+            (ui->frames->selectionModel()->currentIndex().isValid())&&
+            (ui->Setups->selectionModel()->currentIndex().isValid())&&
+            (ui->configs->selectionModel()->currentIndex().isValid())
+    ){
+
+    }
 }

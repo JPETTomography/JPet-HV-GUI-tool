@@ -4,11 +4,10 @@ QMAKE_CXXFLAGS += -std=c++11
 TARGET = JPetGainCalibrationDBEdittingTool.exe
 TEMPLATE = app
 INCLUDEPATH += $$PWD/JPET-HV-adjust
-LIBS+=-L$$PWD/JPET-HV-adjust -ldataaccess
-LIBS+=-L$$PWD/JPET-HV-adjust -lpg_interface
-LIBS+=-L$$PWD/JPET-HV-adjust -lhvadjust
-LIBS+=-L$$PWD/JPET-HV-adjust -llocal_routines
+LIBS+=-L$$PWD/JPET-HV-adjust -ljpetdata -lpg_interface -ldataaccess
 LIBS+= -lpqxx
-SOURCES += main.cpp mainwindow.cpp
-HEADERS  += mainwindow.h
+SOURCES += main.cpp mainwindow.cpp \
+    models.cpp
+HEADERS  += mainwindow.h \
+    models.h
 FORMS    += mainwindow.ui
