@@ -93,25 +93,64 @@ HVTableModel::HVTableModel(const DataAccess::Factory<JPetSetup::HVconfigEntry>&c
                     f_slots.push_back(slot);
                     f_connections.push_back(conn);
                 }
+    f_entries_cache=f_entries.GetList();
 }
 int HVTableModel::rowCount(const QModelIndex &) const{
     return f_connections.size();
 }
 int HVTableModel::columnCount(const QModelIndex &) const{
-    return 4;
+    return 5;
 }
 QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-            return QString::fromStdString(f_layers[index.row()].name());
+            return int(f_layers[index.row()].id());
         case 1:
-            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).name());
+            return QString::fromStdString(f_layers[index.row()].name());
         case 2:
-            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).description());
+            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).name());
         case 3:
-            return double(0.0);
+            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).description());
+        case 4:
+            HVconfigEntry displ(f_connections[index.row()].id(),0.0);
+            for(const HVconfigEntry&item:f_entries_cache)
+                if(item.HVPMConnection_id()==f_connections[index.row()].id())
+                    displ=item;
+            return displ.HV();
         }
     }
     return QVariant::Invalid;
+}
+bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, int role){
+    if (role == Qt::EditRole){
+        switch(index.column()){
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            return false;
+        case 4:
+            vector<HVconfigEntry> tmp;
+            for(const HVconfigEntry&item:f_entries_cache)
+               if(item.HVPMConnection_id()==f_connections[index.row()].id())
+                    tmp.push_back(item);
+            for(auto&item:tmp)f_entries.Delete(item);
+            f_entries.Add(HVconfigEntry(f_connections[index.row()].id(),value.toInt()));
+            f_entries_cache=f_entries.GetList();
+            return true;
+        }
+    }
+    return true;
+}
+Qt::ItemFlags HVTableModel::flags(const QModelIndex & index)const{
+    switch(index.column()){
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+        return Qt::ItemIsEnabled ;
+    case 4:
+        return Qt::ItemIsSelectable |  Qt::ItemIsEditable | Qt::ItemIsEnabled ;
+    }
 }
