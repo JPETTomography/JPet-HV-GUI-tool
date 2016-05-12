@@ -1,4 +1,6 @@
 #include <string>
+#include <QCloseEvent>
+#include <QMessageBox>
 #include <DataGeneral/data_access.h>
 #include <Postgres/postgres_data.h>
 #include <JPetData/Detectors.h>
@@ -58,7 +60,21 @@ void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
                     setups->GetItem(ui->Setups->selectionModel()->currentIndex().row()),
                     frames->GetItem(ui->frames->selectionModel()->currentIndex().row()),
                     Source
-                    );
+        );
         ui->curentconfig->setModel(table_model.get());
     }
+}
+
+void MainWindow::on_pushButton_clicked(){
+    Source->Commit();
+}
+void MainWindow::closeEvent(QCloseEvent*closer){
+    if(Source->changed()){
+        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "J-PET HV manager",
+                                        tr("You have made some changes. Apply them?\n"),
+                                        QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+                                        QMessageBox::Yes);
+        if(QMessageBox::Cancel==resBtn)closer->ignore();
+        else if(QMessageBox::Yes==resBtn) Source->Commit();
+    }else closer->accept();
 }

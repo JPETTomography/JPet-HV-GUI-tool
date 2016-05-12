@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QItemSelection>
 namespace DataAccess{
-    class IDataSource;
+    class PQData;
 }
 namespace JPetSetup{
     class HVPMConnections;
@@ -23,12 +23,15 @@ class MainWindow : public QMainWindow{
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+private:
+    void closeEvent(QCloseEvent*);
 private slots:
     void FrameSelect(const QItemSelection&, const QItemSelection&);
     void HVTableUpdate(const QItemSelection&, const QItemSelection&);
+    void on_pushButton_clicked();
 private:
     Ui::MainWindow *ui;
-    std::shared_ptr<DataAccess::IDataSource> Source;
+    std::shared_ptr<DataAccess::PQData> Source;
     std::shared_ptr<ConfigsModel> configs;
     std::shared_ptr<FramesModel> frames;
     std::shared_ptr<SetupsModel> setups;
