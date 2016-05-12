@@ -101,17 +101,18 @@ int HVTableModel::rowCount(const QModelIndex &) const{
 int HVTableModel::columnCount(const QModelIndex &) const{
     return 5;
 }
+QString toQString(const JPET_side side){return (side==side_left)?"LEFT":"RIGHT";}
 QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-            return int(f_layers[index.row()].id());
+            return toQString(f_connections[index.row()].side());
         case 1:
             return QString::fromStdString(f_layers[index.row()].name());
         case 2:
-            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).name());
+            return QString::fromStdString(f_slots[index.row()].name());
         case 3:
-            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).description());
+            return QString::fromStdString(f_photomultipliers.ByID(f_connections[index.row()].photomultiplier_id()).name());
         case 4:
             HVconfigEntry displ(f_connections[index.row()].id(),0.0);
             for(const HVconfigEntry&item:f_entries_cache)
