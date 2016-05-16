@@ -29,14 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->configs->setModel(configs.get());
     frames=make_shared<FramesModel>(Source);
     ui->frames->setModel(frames.get());
-    connect(ui->frames->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
-            this,SLOT(FrameSelect(const QItemSelection &, const QItemSelection &)));
-    connect(ui->frames->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
-            this,SLOT(HVTableUpdate(const QItemSelection &, const QItemSelection &)));
-    connect(ui->configs->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
-            this,SLOT(HVTableUpdate(const QItemSelection &, const QItemSelection &)));
-    connect(ui->Setups->selectionModel(), SIGNAL(selectionChanged (const QItemSelection &, const QItemSelection &)),
-            this,SLOT(HVTableUpdate(const QItemSelection &, const QItemSelection &)));
+    connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect(const QItemSelection&,const QItemSelection&)));
+    connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
+    connect(ui->configs->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
+    connect(ui->Setups->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
 }
 
 MainWindow::~MainWindow(){
@@ -56,13 +52,13 @@ void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
             (ui->configs->selectionModel()->currentIndex().isValid())
     ){
         table_model=make_shared<HVTableModel>(
-                    configs->GetItem(ui->configs->selectionModel()->currentIndex().row()).CreateEntriesFactory(),
-                    setups->GetItem(ui->Setups->selectionModel()->currentIndex().row()),
-                    frames->GetItem(ui->frames->selectionModel()->currentIndex().row()),
-                    Source
+            configs->GetItem(ui->configs->selectionModel()->currentIndex().row()),
+            setups ->GetItem(ui->Setups->selectionModel()->currentIndex().row()),
+            frames ->GetItem(ui->frames->selectionModel()->currentIndex().row()),
+            Source
         );
         ui->curentconfig->setModel(table_model.get());
-    }
+    }else ui->curentconfig->setModel(nullptr);
 }
 
 void MainWindow::on_pushButton_clicked(){

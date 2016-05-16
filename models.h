@@ -5,6 +5,7 @@
 #include <JPetData/Detectors.h>
 #include <JPetData/Frames.h>
 #include <JPetData/HVconfig.h>
+#include <HV/HVSetter.h>
 
 class ConfigsModel : public QAbstractTableModel{
     Q_OBJECT
@@ -52,7 +53,7 @@ private:
 class HVTableModel : public QAbstractTableModel{
     Q_OBJECT
 public:
-    HVTableModel(const DataAccess::Factory<JPetSetup::HVconfigEntry>&config,
+    HVTableModel(const JPetSetup::HVconfig&config,
             const JPetSetup::Setup&setup,
             const JPetSetup::Frame&frame,
             const std::shared_ptr<DataAccess::IDataSource> src
@@ -63,15 +64,7 @@ public:
     bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex & index) const ;
 private:
-    DataAccess::Factory<JPetSetup::HVconfigEntry> f_entries;
-    JPetSetup::Setup f_setup;
-    JPetSetup::Frame f_frame;
-    JPetSetup::HVPMConnections f_phms;
-    JPetSetup::Photomultipliers f_photomultipliers;
-    std::vector<JPetSetup::Layer> f_layers;
-    std::vector<JPetSetup::Slot> f_slots;
-    std::vector<JPetSetup::HVPMConnection> f_connections;
-    std::vector<JPetSetup::HVconfigEntry> f_entries_cache;
+    HVAdjust::HVTable f_hvtable;
 };
 
 #endif // MODELS_H
