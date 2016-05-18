@@ -15,6 +15,7 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     const JPetSetup::HVconfig& GetItem(const size_t index)const;
+    void AddItem(const QString name);
 private:
     JPetSetup::HVconfigTable f_table;
     std::vector<JPetSetup::HVconfig> f_cache;

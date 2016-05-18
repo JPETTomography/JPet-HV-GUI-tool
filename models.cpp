@@ -24,6 +24,12 @@ QVariant ConfigsModel::data(const QModelIndex &index, int role) const{
     return QVariant::Invalid;
 }
 const HVconfig&ConfigsModel::GetItem(const size_t i)const{return f_cache[i];}
+void ConfigsModel::AddItem(const QString name){
+    f_table.Add(HVconfig(name.toStdString()));
+    f_cache.clear();
+    for(const auto&item: f_table.GetList())f_cache.push_back(item);
+}
+
 
 
 SetupsModel::SetupsModel(const JPetSetup::Frame&src)

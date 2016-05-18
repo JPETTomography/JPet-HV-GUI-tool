@@ -61,7 +61,7 @@ void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
             Source
         );
         ui->curentconfig->setModel(table_model.get());
-    }else ui->curentconfig->setModel(nullptr);
+    }//else ui->curentconfig->setModel(nullptr);
 }
 
 void MainWindow::on_pushButton_clicked(){
@@ -111,9 +111,15 @@ void MainWindow::on_pushButton_3_clicked(){
         }
         file.close();
         ui->curentconfig->setModel(table_model.get());
-    }
+    }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
 }
 
 void MainWindow::on_pushButton_4_clicked(){
-
+    if(ui->new_config_name->text()==""){
+        QMessageBox::question(this,"File error","Config must have name",QMessageBox::Ok,QMessageBox::NoButton);
+        return;
+    }
+    configs->AddItem(ui->new_config_name->text());
+    ui->configs->setModel(configs.get());
+    ui->new_config_name->setText("");
 }
