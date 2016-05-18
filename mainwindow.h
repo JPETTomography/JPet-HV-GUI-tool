@@ -29,6 +29,12 @@ private slots:
     void FrameSelect(const QItemSelection&, const QItemSelection&);
     void HVTableUpdate(const QItemSelection&, const QItemSelection&);
     void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_4_clicked();
+
 private:
     Ui::MainWindow *ui;
     std::shared_ptr<DataAccess::PQData> Source;

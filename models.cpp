@@ -129,3 +129,6 @@ Qt::ItemFlags HVTableModel::flags(const QModelIndex & index)const{
         return Qt::ItemIsSelectable |  Qt::ItemIsEditable | Qt::ItemIsEnabled ;
     }
 }
+HVAdjust::HVTable&HVTableModel::Data(){
+    return f_hvtable;
+}

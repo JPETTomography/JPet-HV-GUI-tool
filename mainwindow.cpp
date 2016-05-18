@@ -1,6 +1,9 @@
 #include <string>
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QFileDialog>
+#include <QFile>
+#include <QTextStream>
 #include <DataGeneral/data_access.h>
 #include <Postgres/postgres_data.h>
 #include <JPetData/Detectors.h>
@@ -73,4 +76,44 @@ void MainWindow::closeEvent(QCloseEvent*closer){
         if(QMessageBox::Cancel==resBtn)closer->ignore();
         else if(QMessageBox::Yes==resBtn) Source->Commit();
     }else closer->accept();
+}
+
+void MainWindow::on_pushButton_2_clicked(){
+    QFile file(QFileDialog::getSaveFileName(this,"Export HV settings to file","","*.txt"));
+    if(file.open(QIODevice::ReadWrite)){
+            QTextStream stream(&file);
+            for(const auto&item:table_model->Data())
+                stream<<item.hvpm.side()<<"\t"
+                     <<item.layer.name().c_str()<<"\t"
+                    <<item.slot.name().c_str()<<"\t"
+                  <<item.entry.HV()<<endl;
+            file.close();
+    }else QMessageBox::question(this,"File error","File cannot be created",QMessageBox::Ok,QMessageBox::NoButton);
+}
+void MainWindow::on_pushButton_3_clicked(){
+    QFile file(QFileDialog::getOpenFileName(this,"Import HV settings to file","","*.txt"));
+    if(file.open(QIODevice::ReadOnly)){
+        QTextStream stream(&file);
+        uint side;
+        QString layer,slot;
+        double hv;
+        while(!(stream>>side>>layer>>slot>>hv).atEnd()){
+            int index=-1;
+            for(int i=0;i<table_model->Data().size();i++)
+            if(
+                (table_model->Data()[i].hvpm.side()==side)&&
+                (table_model->Data()[i].layer.name()==layer.toStdString())&&
+                (table_model->Data()[i].slot.name()==slot.toStdString())
+            )
+                index=i;
+            if(index>=0)
+                table_model->Data().SetHV(index,hv);
+        }
+        file.close();
+        ui->curentconfig->setModel(table_model.get());
+    }
+}
+
+void MainWindow::on_pushButton_4_clicked(){
+
 }
