@@ -2,22 +2,20 @@
 using namespace std;
 using namespace DataAccess;
 using namespace JPetSetup;
-ConfigsModel::ConfigsModel(const std::shared_ptr<DataAccess::IDataSource>src)
-    :QAbstractTableModel(),f_table(src){
+ConfigsModel::ConfigsModel(const std::shared_ptr<DataAccess::IDataSource>src, const size_t setup_id)
+    :QAbstractTableModel(),f_setup_id(setup_id),f_table(src,setup_id){
     for(const auto&item: f_table.GetList())f_cache.push_back(item);
 }
 int ConfigsModel::rowCount(const QModelIndex&) const {
     return f_cache.size();
 }
 int ConfigsModel::columnCount(const QModelIndex&) const{
-    return 2;
+    return 1;
 }
 QVariant ConfigsModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-               return int(f_cache[index.row()].id());
-        case 1:
             return QString::fromStdString(f_cache[index.row()].description());
         }
     }
@@ -25,7 +23,7 @@ QVariant ConfigsModel::data(const QModelIndex &index, int role) const{
 }
 const HVconfig&ConfigsModel::GetItem(const size_t i)const{return f_cache[i];}
 void ConfigsModel::AddItem(const QString name){
-    f_table.Add(HVconfig(name.toStdString()));
+    f_table.Add(HVconfig(f_setup_id,name.toStdString()));
     f_cache.clear();
     for(const auto&item: f_table.GetList())f_cache.push_back(item);
 }
@@ -40,17 +38,15 @@ SetupsModel::SetupsModel(const JPetSetup::Frame&src)
 int SetupsModel::rowCount(const QModelIndex &parent) const{
     return f_cache.size();
 }
-int SetupsModel::columnCount(const QModelIndex &parent) const{
-    return 3;
+int SetupsModel::columnCount(const QModelIndex &) const{
+    return 2;
 }
 QVariant SetupsModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-               return int(f_cache[index.row()].id());
-        case 1:
             return QString::fromStdString(f_cache[index.row()].name());
-        case 2:
+        case 1:
             return QString::fromStdString(f_cache[index.row()].description());
         }
     }
@@ -68,14 +64,12 @@ int FramesModel::rowCount(const QModelIndex&) const {
     return f_cache.size();
 }
 int FramesModel::columnCount(const QModelIndex&) const{
-    return 2;
+    return 1;
 }
 QVariant FramesModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-               return int(f_cache[index.row()].id());
-        case 1:
             return QString::fromStdString(f_cache[index.row()].description());
         }
     }

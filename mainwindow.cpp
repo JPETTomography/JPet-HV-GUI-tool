@@ -28,14 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     Source=make_shared<PQData>(cfg);
     phm_factory=make_shared<Photomultipliers>(Source);
     phm_conn_factory=make_shared<HVPMConnections>(Source);
-    configs=make_shared<ConfigsModel>(Source);
-    ui->configs->setModel(configs.get());
     frames=make_shared<FramesModel>(Source);
     ui->frames->setModel(frames.get());
     connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect(const QItemSelection&,const QItemSelection&)));
-    connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
-    connect(ui->configs->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
-    connect(ui->Setups->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
 }
 
 MainWindow::~MainWindow(){
@@ -43,13 +38,35 @@ MainWindow::~MainWindow(){
 }
 
 void MainWindow::FrameSelect(const QItemSelection &, const QItemSelection &){
-    if(ui->frames->selectionModel()->currentIndex().isValid()){
+    if((frames)&&ui->frames->selectionModel()->currentIndex().isValid()){
         setups=frames->SetupModel(ui->frames->selectionModel()->currentIndex().row());
         ui->Setups->setModel(setups.get());
-    }
+    }else ui->Setups->setModel(nullptr);
+    if(ui->Setups->selectionModel())
+        connect(ui->Setups->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  SetupSelect(const QItemSelection&,const QItemSelection&)));
+}
+void MainWindow::SetupSelect(const QItemSelection &, const QItemSelection &){
+    if((setups)&&(ui->Setups->selectionModel()->currentIndex().isValid())){
+        configs=make_shared<ConfigsModel>(Source,setups ->GetItem(ui->Setups->selectionModel()->currentIndex().row()).id());
+        ui->configs->setModel(configs.get());
+    }else ui->configs->setModel(nullptr);
+    if(ui->configs->selectionModel())
+        connect(ui->configs->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
+}
+void MainWindow::on_pushButton_4_clicked(){
+    if((frames)&&(setups)&&(configs)){
+        if(ui->new_config_name->text()==""){
+            QMessageBox::question(this,"File error","Config must have name",QMessageBox::Ok,QMessageBox::NoButton);
+        }else{
+            configs->AddItem(ui->new_config_name->text());
+            ui->configs->setModel(configs.get());
+            ui->new_config_name->setText("");
+        }
+    }else QMessageBox::question(this,"File error","Please select setup",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
     if(
+            (frames)&&(setups)&&(configs)&&
             (ui->frames->selectionModel()->currentIndex().isValid())&&
             (ui->Setups->selectionModel()->currentIndex().isValid())&&
             (ui->configs->selectionModel()->currentIndex().isValid())
@@ -61,7 +78,7 @@ void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
             Source
         );
         ui->curentconfig->setModel(table_model.get());
-    }//else ui->curentconfig->setModel(nullptr);
+    }else ui->curentconfig->setModel(nullptr);
 }
 
 void MainWindow::on_pushButton_clicked(){
@@ -112,14 +129,4 @@ void MainWindow::on_pushButton_3_clicked(){
         file.close();
         ui->curentconfig->setModel(table_model.get());
     }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
-}
-
-void MainWindow::on_pushButton_4_clicked(){
-    if(ui->new_config_name->text()==""){
-        QMessageBox::question(this,"File error","Config must have name",QMessageBox::Ok,QMessageBox::NoButton);
-        return;
-    }
-    configs->AddItem(ui->new_config_name->text());
-    ui->configs->setModel(configs.get());
-    ui->new_config_name->setText("");
 }

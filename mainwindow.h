@@ -27,6 +27,7 @@ private:
     void closeEvent(QCloseEvent*);
 private slots:
     void FrameSelect(const QItemSelection&, const QItemSelection&);
+    void SetupSelect(const QItemSelection&, const QItemSelection&);
     void HVTableUpdate(const QItemSelection&, const QItemSelection&);
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();

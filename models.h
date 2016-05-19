@@ -10,13 +10,14 @@
 class ConfigsModel : public QAbstractTableModel{
     Q_OBJECT
 public:
-    ConfigsModel(const std::shared_ptr<DataAccess::IDataSource> src);
+    ConfigsModel(const std::shared_ptr<DataAccess::IDataSource> src,const size_t setup_id);
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     const JPetSetup::HVconfig& GetItem(const size_t index)const;
     void AddItem(const QString name);
 private:
+    size_t f_setup_id;
     JPetSetup::HVconfigTable f_table;
     std::vector<JPetSetup::HVconfig> f_cache;
 };
