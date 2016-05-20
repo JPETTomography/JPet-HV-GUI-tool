@@ -26,15 +26,17 @@ public:
 private:
     void closeEvent(QCloseEvent*);
 private slots:
-    void FrameSelect(const QItemSelection&, const QItemSelection&);
-    void SetupSelect(const QItemSelection&, const QItemSelection&);
-    void HVTableUpdate(const QItemSelection&, const QItemSelection&);
+    void FrameSelect();
+    void SetupSelect();
+    void HVTableUpdate();
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
 
     void on_pushButton_4_clicked();
+
+    void on_pushButton_5_clicked();
 
 private:
     Ui::MainWindow *ui;

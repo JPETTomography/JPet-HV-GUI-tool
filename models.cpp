@@ -27,6 +27,11 @@ void ConfigsModel::AddItem(const QString name){
     f_cache.clear();
     for(const auto&item: f_table.GetList())f_cache.push_back(item);
 }
+void ConfigsModel::Delete(const size_t index){
+    f_table.Delete(f_cache[index]);
+    f_cache.clear();
+    for(const auto&item: f_table.GetList())f_cache.push_back(item);
+}
 
 
 

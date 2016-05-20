@@ -30,28 +30,30 @@ MainWindow::MainWindow(QWidget *parent) :
     phm_conn_factory=make_shared<HVPMConnections>(Source);
     frames=make_shared<FramesModel>(Source);
     ui->frames->setModel(frames.get());
-    connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect(const QItemSelection&,const QItemSelection&)));
+    connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect()));
 }
 
 MainWindow::~MainWindow(){
     delete ui;
 }
 
-void MainWindow::FrameSelect(const QItemSelection &, const QItemSelection &){
+void MainWindow::FrameSelect(){
     if((frames)&&ui->frames->selectionModel()->currentIndex().isValid()){
         setups=frames->SetupModel(ui->frames->selectionModel()->currentIndex().row());
         ui->Setups->setModel(setups.get());
     }else ui->Setups->setModel(nullptr);
     if(ui->Setups->selectionModel())
-        connect(ui->Setups->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  SetupSelect(const QItemSelection&,const QItemSelection&)));
+        connect(ui->Setups->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  SetupSelect()));
+    SetupSelect();
 }
-void MainWindow::SetupSelect(const QItemSelection &, const QItemSelection &){
+void MainWindow::SetupSelect(){
     if((setups)&&(ui->Setups->selectionModel()->currentIndex().isValid())){
         configs=make_shared<ConfigsModel>(Source,setups ->GetItem(ui->Setups->selectionModel()->currentIndex().row()).id());
         ui->configs->setModel(configs.get());
     }else ui->configs->setModel(nullptr);
     if(ui->configs->selectionModel())
-        connect(ui->configs->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate(const QItemSelection&,const QItemSelection&)));
+        connect(ui->configs->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate()));
+    HVTableUpdate();
 }
 void MainWindow::on_pushButton_4_clicked(){
     if((frames)&&(setups)&&(configs)){
@@ -59,12 +61,24 @@ void MainWindow::on_pushButton_4_clicked(){
             QMessageBox::question(this,"File error","Config must have name",QMessageBox::Ok,QMessageBox::NoButton);
         }else{
             configs->AddItem(ui->new_config_name->text());
-            ui->configs->setModel(configs.get());
             ui->new_config_name->setText("");
+            SetupSelect();
         }
     }else QMessageBox::question(this,"File error","Please select setup",QMessageBox::Ok,QMessageBox::NoButton);
 }
-void MainWindow::HVTableUpdate(const QItemSelection &, const QItemSelection &){
+void MainWindow::on_pushButton_5_clicked(){
+    if(
+            (frames)&&(setups)&&(configs)&&
+            (ui->frames->selectionModel()->currentIndex().isValid())&&
+            (ui->Setups->selectionModel()->currentIndex().isValid())&&
+            (ui->configs->selectionModel()->currentIndex().isValid())
+    ){
+            table_model->Data().clear();
+            configs->Delete(ui->configs->selectionModel()->currentIndex().row());
+            SetupSelect();
+    }
+}
+void MainWindow::HVTableUpdate(){
     if(
             (frames)&&(setups)&&(configs)&&
             (ui->frames->selectionModel()->currentIndex().isValid())&&
@@ -130,3 +144,4 @@ void MainWindow::on_pushButton_3_clicked(){
         ui->curentconfig->setModel(table_model.get());
     }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
 }
+

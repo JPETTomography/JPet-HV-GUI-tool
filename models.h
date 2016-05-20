@@ -16,6 +16,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     const JPetSetup::HVconfig& GetItem(const size_t index)const;
     void AddItem(const QString name);
+    void Delete(const size_t index);
 private:
     size_t f_setup_id;
     JPetSetup::HVconfigTable f_table;
