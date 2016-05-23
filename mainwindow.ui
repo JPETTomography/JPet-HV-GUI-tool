@@ -161,9 +161,9 @@
     <widget class="QPushButton" name="pushButton_5">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>300</x>
        <y>660</y>
-       <width>151</width>
+       <width>111</width>
        <height>34</height>
       </rect>
      </property>
@@ -174,9 +174,9 @@
     <widget class="QPushButton" name="pushButton_2">
      <property name="geometry">
       <rect>
-       <x>330</x>
+       <x>410</x>
        <y>660</y>
-       <width>121</width>
+       <width>81</width>
        <height>34</height>
       </rect>
      </property>
@@ -187,14 +187,27 @@
     <widget class="QPushButton" name="pushButton_3">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>490</x>
        <y>660</y>
-       <width>111</width>
+       <width>81</width>
        <height>34</height>
       </rect>
      </property>
      <property name="text">
       <string>Import</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>660</y>
+       <width>211</width>
+       <height>34</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>HV setting window</string>
      </property>
     </widget>
    </widget>

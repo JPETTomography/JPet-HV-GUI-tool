@@ -78,6 +78,7 @@ void MainWindow::on_pushButton_5_clicked(){
             SetupSelect();
     }
 }
+
 void MainWindow::HVTableUpdate(){
     if(
             (frames)&&(setups)&&(configs)&&
@@ -145,3 +146,6 @@ void MainWindow::on_pushButton_3_clicked(){
     }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
 }
 
+void MainWindow::on_pushButton_6_clicked(){
+
+}
