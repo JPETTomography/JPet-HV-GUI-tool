@@ -1,3 +1,3 @@
 [submodule "JPET-HV-adjust"]
 	path = JPET-HV-adjust
-	url = git@github.com:alexkernphysiker/JPET-HV-adjust.git
+	url = https://github.com/JPETTomography/JPET-HV-adjust.git
