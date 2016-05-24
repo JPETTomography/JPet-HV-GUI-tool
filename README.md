@@ -1,4 +1,4 @@
-git clone https://github.com/alexkernphysiker/JPet-HV-GUI-tool.git
+git clone https://github.com/JPETTomography/JPet-HV-GUI-tool.git
 
 cd JPet-HV-GUI-tool/
 
