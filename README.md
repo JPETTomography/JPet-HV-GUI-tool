@@ -1,20 +1,26 @@
-git clone https://github.com/JPETTomography/JPet-HV-GUI-tool.git
+GIU tool for HV management in J-PET
+===================================
 
-cd JPet-HV-GUI-tool/
+How to use
+==========
 
-git submodule update --init --recursive
+	git clone https://github.com/JPETTomography/JPet-HV-GUI-tool.git
 
-cd JPET-HV-adjust
+	cd JPet-HV-GUI-tool/
 
-cmake .
+	git submodule update --init --recursive
 
-make
+	cd JPET-HV-adjust
 
-cd ..
+	cmake .
 
-qmake
+	make
 
-make
+	cd ..
 
-./JPetGainCalibrationDBEdittingTool.exe
+	qmake
+
+	make
+
+	./JPetGainCalibrationDBEdittingTool.exe
 
