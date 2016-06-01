@@ -35,16 +35,19 @@ void ConfigsModel::Delete(const size_t index){
 
 
 
-SetupsModel::SetupsModel(const JPetSetup::Frame&src)
-    :QAbstractTableModel(),f_table(src.CreateSetupFactory()){
-    for(const auto&item: f_table.GetList())f_cache.push_back(item);
+SetupsModel::SetupsModel(const JPetSetup::Frame&frame)
+    :QAbstractTableModel(),f_table(frame.CreateSetupFactory()),f_hv_table(frame.DataSource()){
+    for(const Setup&item: f_table.GetList()){
+        f_cache.push_back(item);
+        f_cache_hv.push_back(f_hv_table.ByID(item.highvoltage_id()));
+    }
 }
 
 int SetupsModel::rowCount(const QModelIndex &parent) const{
     return f_cache.size();
 }
 int SetupsModel::columnCount(const QModelIndex &) const{
-    return 2;
+    return 3;
 }
 QVariant SetupsModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
@@ -53,11 +56,15 @@ QVariant SetupsModel::data(const QModelIndex &index, int role) const{
             return QString::fromStdString(f_cache[index.row()].name());
         case 1:
             return QString::fromStdString(f_cache[index.row()].description());
+        case 2:
+            return QString::fromStdString(f_cache_hv[index.row()].description());
         }
     }
     return QVariant::Invalid;
 }
 const Setup&SetupsModel::GetItem(const size_t i)const{return f_cache[i];}
+const HighVoltage&SetupsModel::GetHVItem(const size_t index)const{return f_cache_hv[index];}
+
 
 
 
@@ -87,24 +94,27 @@ const Frame&FramesModel::GetItem(const size_t i)const{return f_cache[i];}
 HVTableModel::HVTableModel(const JPetSetup::HVconfig&config,
         const JPetSetup::Setup&setup,
         const JPetSetup::Frame&frame,
+        const JPetSetup::HighVoltage&hvoltage,
         const std::shared_ptr<IDataSource> src
- ):f_hvtable(config,setup,frame,src){}
-int HVTableModel::rowCount(const QModelIndex &) const{return f_hvtable.size();}
-int HVTableModel::columnCount(const QModelIndex &) const{return 5;}
+ ):f_hvtable(config,setup,frame,hvoltage,src){}
+int HVTableModel::rowCount(const QModelIndex &) const{return f_hvtable.SlotInfo().size();}
+int HVTableModel::columnCount(const QModelIndex &) const{return 6;}
 QString toQString(const JPET_side side){return (side==side_left)?"LEFT":"RIGHT";}
 QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-            return toQString(f_hvtable[index.row()].hvpm.side());
+            return toQString(f_hvtable.SlotInfo()[index.row()].hvpm.side());
         case 1:
-            return QString::fromStdString(f_hvtable[index.row()].layer.name());
+            return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].layer.name());
         case 2:
-            return QString::fromStdString(f_hvtable[index.row()].slot.name());
+            return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].slot.name());
         case 3:
-            return QString::fromStdString(f_hvtable[index.row()].phm.name());
+            return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].phm.name());
         case 4:
-            return f_hvtable[index.row()].entry.HV();
+            return int(f_hvtable.SlotInfo()[index.row()].hvchannel.idx());
+        case 5:
+            return f_hvtable.HVConfigEntries()[index.row()].HV();
         }
     }
     return QVariant::Invalid;
@@ -116,8 +126,9 @@ bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, in
         case 1:
         case 2:
         case 3:
-            return false;
         case 4:
+            return false;
+        case 5:
             return f_hvtable.SetHV(index.row(),value.toInt());
         }
     }
@@ -129,8 +140,9 @@ Qt::ItemFlags HVTableModel::flags(const QModelIndex & index)const{
     case 1:
     case 2:
     case 3:
-        return Qt::ItemIsEnabled ;
     case 4:
+        return Qt::ItemIsEnabled ;
+    case 5:
         return Qt::ItemIsSelectable |  Qt::ItemIsEditable | Qt::ItemIsEnabled ;
     }
 }

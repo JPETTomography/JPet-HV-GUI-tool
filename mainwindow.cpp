@@ -90,6 +90,7 @@ void MainWindow::HVTableUpdate(){
             configs->GetItem(ui->configs->selectionModel()->currentIndex().row()),
             setups ->GetItem(ui->Setups->selectionModel()->currentIndex().row()),
             frames ->GetItem(ui->frames->selectionModel()->currentIndex().row()),
+            setups ->GetHVItem(ui->Setups->selectionModel()->currentIndex().row()),
             Source
         );
         ui->curentconfig->setModel(table_model.get());
@@ -114,11 +115,11 @@ void MainWindow::on_pushButton_2_clicked(){
     QFile file(QFileDialog::getSaveFileName(this,"Export HV settings to file","","*.txt"));
     if(file.open(QIODevice::ReadWrite)){
             QTextStream stream(&file);
-            for(const auto&item:table_model->Data())
-                stream<<item.hvpm.side()<<"\t"
-                     <<item.layer.name().c_str()<<"\t"
-                    <<item.slot.name().c_str()<<"\t"
-                  <<item.entry.HV()<<endl;
+            for(size_t i=0;i<table_model->Data().SlotInfo().size();i++)
+                stream<<table_model->Data().SlotInfo()[i].hvpm.side()<<"\t"
+                     <<table_model->Data().SlotInfo()[i].layer.name().c_str()<<"\t"
+                    <<table_model->Data().SlotInfo()[i].slot.name().c_str()<<"\t"
+                  <<table_model->Data().HVConfigEntries()[i].HV()<<endl;
             file.close();
     }else QMessageBox::question(this,"File error","File cannot be created",QMessageBox::Ok,QMessageBox::NoButton);
 }
@@ -131,11 +132,11 @@ void MainWindow::on_pushButton_3_clicked(){
         double hv;
         while(!(stream>>side>>layer>>slot>>hv).atEnd()){
             int index=-1;
-            for(int i=0;i<table_model->Data().size();i++)
+            for(int i=0;i<table_model->Data().SlotInfo().size();i++)
             if(
-                (table_model->Data()[i].hvpm.side()==side)&&
-                (table_model->Data()[i].layer.name()==layer.toStdString())&&
-                (table_model->Data()[i].slot.name()==slot.toStdString())
+                (table_model->Data().SlotInfo()[i].hvpm.side()==side)&&
+                (table_model->Data().SlotInfo()[i].layer.name()==layer.toStdString())&&
+                (table_model->Data().SlotInfo()[i].slot.name()==slot.toStdString())
             )
                 index=i;
             if(index>=0)

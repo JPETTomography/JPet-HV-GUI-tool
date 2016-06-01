@@ -27,14 +27,17 @@ private:
 class SetupsModel : public QAbstractTableModel{
     Q_OBJECT
 public:
-    SetupsModel(const JPetSetup::Frame&src);
+    SetupsModel(const JPetSetup::Frame&frame);
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     const JPetSetup::Setup& GetItem(const size_t index)const;
+    const JPetSetup::HighVoltage& GetHVItem(const size_t index)const;
 private:
     DataAccess::Factory<JPetSetup::Setup> f_table;
+    JPetSetup::HighVoltageTable f_hv_table;
     std::vector<JPetSetup::Setup> f_cache;
+    std::vector<JPetSetup::HighVoltage> f_cache_hv;
 };
 
 
@@ -59,6 +62,7 @@ public:
     HVTableModel(const JPetSetup::HVconfig&config,
             const JPetSetup::Setup&setup,
             const JPetSetup::Frame&frame,
+            const JPetSetup::HighVoltage&hvoltage,
             const std::shared_ptr<DataAccess::IDataSource> src
     );
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
