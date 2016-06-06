@@ -148,5 +148,11 @@ void MainWindow::on_pushButton_3_clicked(){
 }
 
 void MainWindow::on_pushButton_6_clicked(){
-
+    if(
+            (frames)&&(setups)&&(configs)&&
+            (ui->frames->selectionModel()->currentIndex().isValid())&&
+            (ui->Setups->selectionModel()->currentIndex().isValid())&&
+            (ui->configs->selectionModel()->currentIndex().isValid())
+    )
+        table_model->Data().SynchroHardwarewithDB();
 }

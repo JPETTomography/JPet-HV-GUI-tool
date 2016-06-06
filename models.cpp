@@ -96,9 +96,9 @@ HVTableModel::HVTableModel(const JPetSetup::HVconfig&config,
         const JPetSetup::Frame&frame,
         const JPetSetup::HighVoltage&hvoltage,
         const std::shared_ptr<IDataSource> src
- ):f_hvtable(config,setup,frame,hvoltage,src){}
+ ):f_hvtable(config,setup,frame,hvoltage,src,make_shared<DummyHardware>()){}
 int HVTableModel::rowCount(const QModelIndex &) const{return f_hvtable.SlotInfo().size();}
-int HVTableModel::columnCount(const QModelIndex &) const{return 6;}
+int HVTableModel::columnCount(const QModelIndex &) const{return 7;}
 QString toQString(const JPET_side side){return (side==side_left)?"LEFT":"RIGHT";}
 QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
@@ -115,6 +115,8 @@ QVariant HVTableModel::data(const QModelIndex &index, int role) const{
             return int(f_hvtable.SlotInfo()[index.row()].hvchannel.idx());
         case 5:
             return f_hvtable.HVConfigEntries()[index.row()].HV();
+        case 6:
+            return f_hvtable.HardwareHV()[index.row()];
         }
     }
     return QVariant::Invalid;
@@ -127,6 +129,7 @@ bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, in
         case 2:
         case 3:
         case 4:
+        case 6:
             return false;
         case 5:
             return f_hvtable.SetHV(index.row(),value.toInt());
@@ -141,6 +144,7 @@ Qt::ItemFlags HVTableModel::flags(const QModelIndex & index)const{
     case 2:
     case 3:
     case 4:
+    case 6:
         return Qt::ItemIsEnabled ;
     case 5:
         return Qt::ItemIsSelectable |  Qt::ItemIsEditable | Qt::ItemIsEnabled ;

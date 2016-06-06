@@ -207,7 +207,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>HV setting window</string>
+      <string>Send to hardware</string>
      </property>
     </widget>
    </widget>
