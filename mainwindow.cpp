@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -10,6 +11,7 @@
 #include <JPetData/Frames.h>
 #include <JPetData/HVSetter.h>
 #include <Postgres/postgres_data.h>
+#include <HV/CAEN.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "models.h"
@@ -17,6 +19,7 @@ using namespace std;
 using namespace DataAccess;
 using namespace JPetSetup;
 using namespace HVAdjust;
+using namespace Hardware;
 class DummyHardware: public HVAdjust::IHVSetter{
 public:
     DummyHardware(){}
@@ -25,13 +28,24 @@ public:
     virtual double GetHV(size_t) const override{return INFINITY;}
     virtual double GetCurent(size_t) const override{return INFINITY;}
 };
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
     ui->setupUi(this);
-    Source=make_shared<PQData>("host=127.0.0.1 dbname=postgres user=postgres password=pass");
-    hardware=make_shared<DummyHardware>();
+    QFile file(QApplication::applicationFilePath()+".txt");
+    string cstr1="";
+    string cstr2="";
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QTextStream in(&file);
+        cstr1=in.readLine().toStdString();
+        cstr2=in.readLine().toStdString();
+        file.close();
+        cout<<"pqxx conn_str = "<<cstr1<<endl;
+        cout<<"HV conn_str = "<<cstr2<<endl;
+    }
+    Source=make_shared<PQData>(cstr1);
+    if(cstr2!="")hardware=make_shared<CAEN>(cstr2);
+    else hardware=make_shared<DummyHardware>();
     phm_factory=make_shared<Photomultipliers>(Source);
     phm_conn_factory=make_shared<HVPMConnections>(Source);
     frames=make_shared<FramesModel>(Source);
