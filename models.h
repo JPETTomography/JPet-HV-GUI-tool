@@ -5,7 +5,7 @@
 #include <JPetData/Detectors.h>
 #include <JPetData/Frames.h>
 #include <JPetData/HVconfig.h>
-#include <HV/HVSetter.h>
+#include <JPetData/HVSetter.h>
 
 class ConfigsModel : public QAbstractTableModel{
     Q_OBJECT
@@ -46,6 +46,7 @@ public:
     virtual ~DummyHardware(){}
     virtual bool SetHV(size_t, double)override{}
     virtual double GetHV(size_t) const override{return INFINITY;}
+    virtual double GetCurent(size_t) const override{return INFINITY;}
 };
 class FramesModel : public QAbstractTableModel{
     Q_OBJECT

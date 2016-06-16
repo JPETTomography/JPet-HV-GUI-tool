@@ -4,7 +4,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QTextStream>
-#include <DataGeneral/data_access.h>
+#include <JPetData/data_access.h>
 #include <Postgres/postgres_data.h>
 #include <JPetData/Detectors.h>
 #include <JPetData/HVconfig.h>
@@ -19,18 +19,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
     ui->setupUi(this);
-    DBConfigData cfg;
-    cfg.hostname="127.0.0.1";
-    cfg.port="5432";
-    cfg.db_name="postgres";
-    cfg.username="postgres";
-    cfg.password="pass";
-    Source=make_shared<PQData>(cfg);
+    Source=make_shared<PQData>("host=127.0.0.1 dbname=postgres user=postgres password=pass");
     phm_factory=make_shared<Photomultipliers>(Source);
     phm_conn_factory=make_shared<HVPMConnections>(Source);
     frames=make_shared<FramesModel>(Source);
     ui->frames->setModel(frames.get());
-    connect(ui->frames->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect()));
+    connect(ui->frames->selectionModel(),SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect()));
 }
 
 MainWindow::~MainWindow(){

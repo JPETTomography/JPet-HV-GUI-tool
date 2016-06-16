@@ -4,7 +4,7 @@ using namespace DataAccess;
 using namespace JPetSetup;
 ConfigsModel::ConfigsModel(const std::shared_ptr<DataAccess::IDataSource>src, const size_t setup_id)
     :QAbstractTableModel(),f_setup_id(setup_id),f_table(src,setup_id){
-    for(const auto&item: f_table.GetList())f_cache.push_back(item);
+    for(const auto&item: f_table.SelectAll())f_cache.push_back(item);
 }
 int ConfigsModel::rowCount(const QModelIndex&) const {
     return f_cache.size();
@@ -25,19 +25,19 @@ const HVconfig&ConfigsModel::GetItem(const size_t i)const{return f_cache[i];}
 void ConfigsModel::AddItem(const QString name){
     f_table.Add(HVconfig(f_setup_id,name.toStdString()));
     f_cache.clear();
-    for(const auto&item: f_table.GetList())f_cache.push_back(item);
+    for(const auto&item: f_table.SelectAll())f_cache.push_back(item);
 }
 void ConfigsModel::Delete(const size_t index){
     f_table.Delete(f_cache[index]);
     f_cache.clear();
-    for(const auto&item: f_table.GetList())f_cache.push_back(item);
+    for(const auto&item: f_table.SelectAll())f_cache.push_back(item);
 }
 
 
 
 SetupsModel::SetupsModel(const JPetSetup::Frame&frame)
     :QAbstractTableModel(),f_table(frame.CreateSetupFactory()),f_hv_table(frame.DataSource()){
-    for(const Setup&item: f_table.GetList()){
+    for(const Setup&item: f_table.SelectAll()){
         f_cache.push_back(item);
         f_cache_hv.push_back(f_hv_table.ByID(item.highvoltage_id()));
     }
@@ -70,7 +70,7 @@ const HighVoltage&SetupsModel::GetHVItem(const size_t index)const{return f_cache
 
 FramesModel::FramesModel(const std::shared_ptr<DataAccess::IDataSource>src)
     :QAbstractTableModel(),f_table(src){
-    for(const auto&item:f_table.GetList())f_cache.push_back(item);
+    for(const auto&item:f_table.SelectAll())f_cache.push_back(item);
 }
 int FramesModel::rowCount(const QModelIndex&) const {
     return f_cache.size();
