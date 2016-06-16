@@ -3,6 +3,9 @@
 #include <memory>
 #include <QMainWindow>
 #include <QItemSelection>
+namespace HVAdjust {
+    class IHVSetter;
+}
 namespace DataAccess{
     class PQData;
 }
@@ -43,6 +46,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     std::shared_ptr<DataAccess::PQData> Source;
+    std::shared_ptr<HVAdjust::IHVSetter> hardware;
     std::shared_ptr<ConfigsModel> configs;
     std::shared_ptr<FramesModel> frames;
     std::shared_ptr<SetupsModel> setups;

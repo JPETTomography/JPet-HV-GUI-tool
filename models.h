@@ -40,14 +40,6 @@ private:
     std::vector<JPetSetup::HighVoltage> f_cache_hv;
 };
 
-class DummyHardware: public HVAdjust::IHVSetter{
-public:
-    DummyHardware(){}
-    virtual ~DummyHardware(){}
-    virtual bool SetHV(size_t, double)override{}
-    virtual double GetHV(size_t) const override{return INFINITY;}
-    virtual double GetCurent(size_t) const override{return INFINITY;}
-};
 class FramesModel : public QAbstractTableModel{
     Q_OBJECT
 public:
@@ -70,7 +62,8 @@ public:
             const JPetSetup::Setup&setup,
             const JPetSetup::Frame&frame,
             const JPetSetup::HighVoltage&hvoltage,
-            const std::shared_ptr<DataAccess::IDataSource> src
+            const std::shared_ptr<DataAccess::IDataSource> src,
+            const std::shared_ptr<HVAdjust::IHVSetter>
     );
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;

@@ -95,8 +95,9 @@ HVTableModel::HVTableModel(const JPetSetup::HVconfig&config,
         const JPetSetup::Setup&setup,
         const JPetSetup::Frame&frame,
         const JPetSetup::HighVoltage&hvoltage,
-        const std::shared_ptr<IDataSource> src
- ):f_hvtable(config,setup,frame,hvoltage,src,make_shared<DummyHardware>()){}
+        const std::shared_ptr<IDataSource> src,
+        const std::shared_ptr<HVAdjust::IHVSetter> hardware
+ ):f_hvtable(config,setup,frame,hvoltage,src,hardware){}
 int HVTableModel::rowCount(const QModelIndex &) const{return f_hvtable.SlotInfo().size();}
 int HVTableModel::columnCount(const QModelIndex &) const{return 7;}
 QString toQString(const JPET_side side){return (side==side_left)?"LEFT":"RIGHT";}

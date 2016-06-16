@@ -5,21 +5,33 @@
 #include <QFile>
 #include <QTextStream>
 #include <JPetData/data_access.h>
-#include <Postgres/postgres_data.h>
 #include <JPetData/Detectors.h>
 #include <JPetData/HVconfig.h>
 #include <JPetData/Frames.h>
+#include <JPetData/HVSetter.h>
+#include <Postgres/postgres_data.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "models.h"
 using namespace std;
 using namespace DataAccess;
 using namespace JPetSetup;
+using namespace HVAdjust;
+class DummyHardware: public HVAdjust::IHVSetter{
+public:
+    DummyHardware(){}
+    virtual ~DummyHardware(){}
+    virtual bool SetHV(size_t, double)override{}
+    virtual double GetHV(size_t) const override{return INFINITY;}
+    virtual double GetCurent(size_t) const override{return INFINITY;}
+};
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
     ui->setupUi(this);
     Source=make_shared<PQData>("host=127.0.0.1 dbname=postgres user=postgres password=pass");
+    hardware=make_shared<DummyHardware>();
     phm_factory=make_shared<Photomultipliers>(Source);
     phm_conn_factory=make_shared<HVPMConnections>(Source);
     frames=make_shared<FramesModel>(Source);
@@ -85,7 +97,7 @@ void MainWindow::HVTableUpdate(){
             setups ->GetItem(ui->Setups->selectionModel()->currentIndex().row()),
             frames ->GetItem(ui->frames->selectionModel()->currentIndex().row()),
             setups ->GetHVItem(ui->Setups->selectionModel()->currentIndex().row()),
-            Source
+            Source,hardware
         );
         ui->curentconfig->setModel(table_model.get());
     }else ui->curentconfig->setModel(nullptr);
