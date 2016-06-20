@@ -20,14 +20,6 @@ using namespace DataAccess;
 using namespace JPetSetup;
 using namespace HVAdjust;
 using namespace Hardware;
-class DummyHardware: public HVAdjust::IHVSetter{
-public:
-    DummyHardware(){}
-    virtual ~DummyHardware(){}
-    virtual bool SetHV(size_t, double)override{}
-    virtual double GetHV(size_t) const override{return INFINITY;}
-    virtual double GetCurent(size_t) const override{return INFINITY;}
-};
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
@@ -44,8 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
         cout<<"HV conn_str = "<<cstr2<<endl;
     }
     Source=make_shared<PQData>(cstr1);
-    if(cstr2!="")hardware=make_shared<CAEN>(cstr2);
-    else hardware=make_shared<DummyHardware>();
+    hardware=make_shared<CAEN>(cstr2);
     phm_factory=make_shared<Photomultipliers>(Source);
     phm_conn_factory=make_shared<HVPMConnections>(Source);
     frames=make_shared<FramesModel>(Source);
