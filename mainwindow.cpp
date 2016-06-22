@@ -36,7 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
         cout<<"HV conn_str = "<<cstr2<<endl;
     }
     Source=make_shared<PQData>(cstr1);
-    hardware=make_shared<CAEN>(cstr2);
+    if(cstr2!="")hardware=make_shared<CAEN>(cstr2);
+    else hardware=make_shared<DummyHV>();
     phm_factory=make_shared<Photomultipliers>(Source);
     phm_conn_factory=make_shared<HVPMConnections>(Source);
     frames=make_shared<FramesModel>(Source);
