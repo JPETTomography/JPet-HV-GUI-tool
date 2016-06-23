@@ -138,19 +138,19 @@ QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
         case 0:
-            return toQString(f_hvtable.SlotInfo()[index.row()].hvpm.side());
+		return toQString(f_hvtable.SlotInfo()[index.row()].hvpm.side());
         case 1:
-            return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].layer.name());
+		return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].layer.name());
         case 2:
-            return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].slot.name());
+		return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].slot.name());
         case 3:
-            return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].phm.name());
+		return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].phm.name());
         case 4:
-            return int(f_hvtable.SlotInfo()[index.row()].hvchannel.idx());
+		return int(f_hvtable.SlotInfo()[index.row()].hvchannel.idx());
         case 5:
-            return f_hvtable.HVConfigEntries()[index.row()].HV();
+		return f_hvtable.HVConfigEntries()[index.row()].HV();
         case 6:
-            return f_hvtable.HardwareHV()[index.row()];
+		return f_hvtable.SlotInfo()[index.row()].phm.max_hv();
         }
     }
     return QVariant::Invalid;
@@ -171,7 +171,7 @@ QVariant HVTableModel::headerData(int section, Qt::Orientation orientation, int 
 			case 5:
 				return ("HV");
 			case 6:
-				return ("monitor");
+				return ("MAX");
 		}
 	}
 	return QVariant();

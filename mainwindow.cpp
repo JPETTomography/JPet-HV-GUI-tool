@@ -104,13 +104,13 @@ void MainWindow::HVTableUpdate(){
         );
         ui->curentconfig->setModel(table_model.get());
     }else ui->curentconfig->setModel(nullptr);
-    ui->curentconfig->setColumnWidth(0,60);
-    ui->curentconfig->setColumnWidth(1,80);
-    ui->curentconfig->setColumnWidth(2,60);
-    ui->curentconfig->setColumnWidth(3,80);
-    ui->curentconfig->setColumnWidth(4,80);
+    ui->curentconfig->setColumnWidth(0,50);
+    ui->curentconfig->setColumnWidth(1,70);
+    ui->curentconfig->setColumnWidth(2,50);
+    ui->curentconfig->setColumnWidth(3,70);
+    ui->curentconfig->setColumnWidth(4,70);
     ui->curentconfig->setColumnWidth(5,100);
-    ui->curentconfig->setColumnWidth(6,3);
+    ui->curentconfig->setColumnWidth(6,70);
 }
 
 void MainWindow::on_pushButton_clicked(){
