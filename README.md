@@ -1,4 +1,4 @@
-Set of libraries needed for HV management in J-PET
+GUI tool for HV management in J-PET
 ==================================================
 
 Environment variables
@@ -22,7 +22,7 @@ How to compile
 
 Config file required for tools
 ==============================
-The tools look for file 
+The tools look for file
 
 	connstr.txt
 
@@ -30,6 +30,7 @@ in current directory (where you run the binary).
 It must contain two lines
 
 	database connection string
-
+	
 	HV connection string
+
 

@@ -186,9 +186,11 @@ bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, in
         case 3:
         case 4:
         case 6:
-            return false;
+		return false;
         case 5:
-            return f_hvtable.SetHV(index.row(),value.toInt());
+		double new_hv=value.toInt();
+		if(new_hv*f_hvtable.SlotInfo()[index.row()].phm.max_hv()<0)new_hv*=-1.0;
+		return f_hvtable.SetHV(index.row(),new_hv);
         }
     }
     return true;
