@@ -12,6 +12,7 @@
 #include <JPetData/HVSetter.h>
 #include <Postgres/postgres_data.h>
 #include <HV/CAEN.h>
+#include <config-read.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "models.h"
@@ -24,17 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow){
     ui->setupUi(this);
-    QFile file(QApplication::applicationFilePath()+".txt");
-    string cstr1="";
-    string cstr2="";
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text)){
-        QTextStream in(&file);
-        cstr1=in.readLine().toStdString();
-        cstr2=in.readLine().toStdString();
-        file.close();
-        cout<<"pqxx conn_str = "<<cstr1<<endl;
-        cout<<"HV conn_str = "<<cstr2<<endl;
-    }
+    string cstr1=connstr_config::DB();
+    string cstr2=connstr_config::HV();
     Source=make_shared<PQData>(cstr1);
     if(cstr2!="")hardware=make_shared<CAEN>(cstr2);
     else hardware=make_shared<DummyHV>();
