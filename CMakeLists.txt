@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 2.6)
+project(JPET-HV-GUI-tool)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -std=c++11)
+
+add_subdirectory(JPET-HV-adjust)
+message(${HV_ADJUST_INC})
+include_directories(${HV_ADJUST_INC})
+include_directories(${QT_INCLUDE_DIR})
+link_directories(${QT_LIBRARY_DIR} ${HV_ADJUST_LIBDIR})
+
+FIND_PACKAGE(Qt4 REQUIRED)
+INCLUDE(${QT_USE_FILE})
+
+file (GLOB HEADER_FILES *.h)
+file (GLOB CPP_FILES *.cpp)
+file (GLOB UI_FILES *.ui)
+QT4_WRAP_UI(UISrcs ${UI_FILES})
+QT4_WRAP_CPP(MOCSrcs ${HEADER_FILES})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+ADD_EXECUTABLE(hv-gui-tool ${CPP_FILES} ${MOCSrcs} ${UISrcs})
+TARGET_LINK_LIBRARIES(hv-gui-tool ${QT_LIBRARIES} ${HV_ADJUST_LIBS})

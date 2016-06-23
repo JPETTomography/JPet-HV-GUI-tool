@@ -34,7 +34,7 @@ public:
     const JPetSetup::Setup& GetItem(const size_t index)const;
     const JPetSetup::HighVoltage& GetHVItem(const size_t index)const;
 private:
-    DataAccess::Factory<JPetSetup::Setup> f_table;
+    DataAccess::DataTableInterface<JPetSetup::Setup> f_table;
     JPetSetup::HighVoltageTable f_hv_table;
     std::vector<JPetSetup::Setup> f_cache;
     std::vector<JPetSetup::HighVoltage> f_cache_hv;

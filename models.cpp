@@ -36,7 +36,7 @@ void ConfigsModel::Delete(const size_t index){
 
 
 SetupsModel::SetupsModel(const JPetSetup::Frame&frame)
-    :QAbstractTableModel(),f_table(frame.CreateSetupFactory()),f_hv_table(frame.DataSource()){
+    :QAbstractTableModel(),f_table(frame.CreateSetupInterface()),f_hv_table(frame.DataSource()){
     for(const Setup&item: f_table.SelectAll()){
         f_cache.push_back(item);
         f_cache_hv.push_back(f_hv_table.ByID(item.highvoltage_id()));
