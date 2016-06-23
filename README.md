@@ -13,6 +13,8 @@ How to compile
 	
 	cd JPet-HV-GUI-tool
 	
+	git submodule update --init --recursive
+	
 	cmake .
 	
 	make
