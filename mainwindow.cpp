@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     frames=make_shared<FramesModel>(Source);
     ui->frames->setModel(frames.get());
     connect(ui->frames->selectionModel(),SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  FrameSelect()));
+    ui->frames->setColumnWidth(0,350);
 }
 
 MainWindow::~MainWindow(){
@@ -48,6 +49,9 @@ void MainWindow::FrameSelect(){
     }else ui->Setups->setModel(nullptr);
     if(ui->Setups->selectionModel())
         connect(ui->Setups->selectionModel(),  SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(  SetupSelect()));
+    ui->Setups->setColumnWidth(0,100);
+    ui->Setups->setColumnWidth(1,100);
+    ui->Setups->setColumnWidth(2,150);
     SetupSelect();
 }
 void MainWindow::SetupSelect(){
@@ -55,6 +59,7 @@ void MainWindow::SetupSelect(){
         configs=make_shared<ConfigsModel>(Source,setups ->GetItem(ui->Setups->selectionModel()->currentIndex().row()).id());
         ui->configs->setModel(configs.get());
     }else ui->configs->setModel(nullptr);
+    ui->configs->setColumnWidth(0,350);
     if(ui->configs->selectionModel())
         connect(ui->configs->selectionModel(), SIGNAL(selectionChanged(const QItemSelection&,const QItemSelection&)), this,SLOT(HVTableUpdate()));
     HVTableUpdate();
@@ -99,6 +104,13 @@ void MainWindow::HVTableUpdate(){
         );
         ui->curentconfig->setModel(table_model.get());
     }else ui->curentconfig->setModel(nullptr);
+    ui->curentconfig->setColumnWidth(0,60);
+    ui->curentconfig->setColumnWidth(1,80);
+    ui->curentconfig->setColumnWidth(2,60);
+    ui->curentconfig->setColumnWidth(3,80);
+    ui->curentconfig->setColumnWidth(4,80);
+    ui->curentconfig->setColumnWidth(5,100);
+    ui->curentconfig->setColumnWidth(6,3);
 }
 
 void MainWindow::on_pushButton_clicked(){
@@ -152,11 +164,20 @@ void MainWindow::on_pushButton_3_clicked(){
 }
 
 void MainWindow::on_pushButton_6_clicked(){
-    if(
-            (frames)&&(setups)&&(configs)&&
-            (ui->frames->selectionModel()->currentIndex().isValid())&&
-            (ui->Setups->selectionModel()->currentIndex().isValid())&&
-            (ui->configs->selectionModel()->currentIndex().isValid())
-    )
-        table_model->Data().SynchroHardwarewithDB();
+	if(
+		(frames)&&(setups)&&(configs)&&
+		(ui->frames->selectionModel()->currentIndex().isValid())&&
+		(ui->Setups->selectionModel()->currentIndex().isValid())&&
+		(ui->configs->selectionModel()->currentIndex().isValid())
+	)
+		table_model->Data().SynchroHardwarewithDB();
+}
+void MainWindow::on_pushButton_7_clicked(){
+	if(
+		(frames)&&(setups)&&(configs)&&
+		(ui->frames->selectionModel()->currentIndex().isValid())&&
+		(ui->Setups->selectionModel()->currentIndex().isValid())&&
+		(ui->configs->selectionModel()->currentIndex().isValid())
+	)
+		table_model->Data().SwitchOffHardware();
 }

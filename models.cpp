@@ -21,6 +21,15 @@ QVariant ConfigsModel::data(const QModelIndex &index, int role) const{
     }
     return QVariant::Invalid;
 }
+QVariant ConfigsModel::headerData(int section, Qt::Orientation orientation, int role)const {
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+		switch (section) {
+			case 0:
+				return ("HV configuration");
+		}
+	}
+	return QVariant();
+}
 const HVconfig&ConfigsModel::GetItem(const size_t i)const{return f_cache[i];}
 void ConfigsModel::AddItem(const QString name){
     f_table.Add(HVconfig(f_setup_id,name.toStdString()));
@@ -62,6 +71,20 @@ QVariant SetupsModel::data(const QModelIndex &index, int role) const{
     }
     return QVariant::Invalid;
 }
+QVariant SetupsModel::headerData(int section, Qt::Orientation orientation, int role) const{
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+		switch (section) {
+			case 0:
+				return ("Name");
+			case 1:
+				return ("Description");
+			case 2:
+				return ("High Voltage");
+		}
+	}
+	return QVariant();
+}
+
 const Setup&SetupsModel::GetItem(const size_t i)const{return f_cache[i];}
 const HighVoltage&SetupsModel::GetHVItem(const size_t index)const{return f_cache_hv[index];}
 
@@ -87,6 +110,16 @@ QVariant FramesModel::data(const QModelIndex &index, int role) const{
     }
     return QVariant::Invalid;
 }
+QVariant FramesModel::headerData(int section, Qt::Orientation orientation, int role) const{
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+		switch (section) {
+			case 0:
+				return ("Frame");
+		}
+	}
+	return QVariant();
+}
+
 shared_ptr<SetupsModel> FramesModel::SetupModel(const int index)const{return make_shared<SetupsModel>(f_cache[index]);}
 const Frame&FramesModel::GetItem(const size_t i)const{return f_cache[i];}
 
@@ -122,6 +155,28 @@ QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     }
     return QVariant::Invalid;
 }
+QVariant HVTableModel::headerData(int section, Qt::Orientation orientation, int role) const{
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
+		switch (section) {
+			case 0:
+				return ("Side");
+			case 1:
+				return ("Layer");
+			case 2:
+				return ("Slot");
+			case 3:
+				return ("PHM");
+			case 4:
+				return ("idx");
+			case 5:
+				return ("HV");
+			case 6:
+				return ("monitor");
+		}
+	}
+	return QVariant();
+}
+
 bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, int role){
     if (role == Qt::EditRole){
         switch(index.column()){

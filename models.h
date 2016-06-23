@@ -1,6 +1,7 @@
 #ifndef MODELS_H
 #define MODELS_H
 #include <vector>
+#include <QSize>
 #include <QAbstractTableModel>
 #include <JPetData/Detectors.h>
 #include <JPetData/Frames.h>
@@ -14,6 +15,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     const JPetSetup::HVconfig& GetItem(const size_t index)const;
     void AddItem(const QString name);
     void Delete(const size_t index);
@@ -31,6 +33,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     const JPetSetup::Setup& GetItem(const size_t index)const;
     const JPetSetup::HighVoltage& GetHVItem(const size_t index)const;
 private:
@@ -47,6 +50,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     const JPetSetup::Frame& GetItem(const size_t index)const;
     std::shared_ptr<SetupsModel> SetupModel(const int index)const;
 private:
@@ -68,6 +72,7 @@ public:
     int rowCount(const QModelIndex &parent = QModelIndex()) const ;
     int columnCount(const QModelIndex &parent = QModelIndex()) const;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
     bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
     Qt::ItemFlags flags(const QModelIndex & index) const ;
     HVAdjust::HVTable&Data();
