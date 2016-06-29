@@ -162,6 +162,20 @@ void MainWindow::on_pushButton_3_clicked(){
         ui->curentconfig->setModel(table_model.get());
     }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
 }
+void MainWindow::on_pushButton_8_clicked(){
+	if(
+		(frames)&&(setups)&&(configs)&&
+		(ui->frames->selectionModel()->currentIndex().isValid())&&
+		(ui->Setups->selectionModel()->currentIndex().isValid())&&
+		(ui->configs->selectionModel()->currentIndex().isValid())
+	){
+		table_model->Data().read_hardware();
+		for(size_t i=0;i<table_model->Data().SlotInfo().size();i++){
+			double hv=table_model->Data().HardwareHV()[i];
+			table_model->Data().SetHV(i,hv);
+		}
+	}
+}
 
 void MainWindow::on_pushButton_6_clicked(){
 	if(
