@@ -32,7 +32,7 @@ QVariant ConfigsModel::headerData(int section, Qt::Orientation orientation, int 
 }
 const HVconfig&ConfigsModel::GetItem(const size_t i)const{return f_cache[i];}
 void ConfigsModel::AddItem(const QString name){
-    f_table.Add(HVconfig(f_setup_id,name.toStdString()));
+    f_table.Add(HVconfig(name.toStdString()));
     f_cache.clear();
     for(const auto&item: f_table.SelectAll())f_cache.push_back(item);
 }
