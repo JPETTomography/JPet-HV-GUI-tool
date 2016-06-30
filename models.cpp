@@ -132,8 +132,8 @@ HVTableModel::HVTableModel(const JPetSetup::HVconfig&config,
         const std::shared_ptr<HVAdjust::IHVSetter> hardware
  ):f_hvtable(config,setup,frame,hvoltage,src,hardware){}
 int HVTableModel::rowCount(const QModelIndex &) const{return f_hvtable.SlotInfo().size();}
-int HVTableModel::columnCount(const QModelIndex &) const{return 7;}
-QString toQString(const JPET_side side){return (side==side_left)?"LEFT":"RIGHT";}
+int HVTableModel::columnCount(const QModelIndex &) const{return 8;}
+QString toQString(const JPET_side side){return (side==side_left)?"A":"B";}
 QVariant HVTableModel::data(const QModelIndex &index, int role) const{
     if(role == Qt::DisplayRole){
         switch(index.column()){
@@ -145,13 +145,15 @@ QVariant HVTableModel::data(const QModelIndex &index, int role) const{
 		return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].slot.name());
         case 3:
 		return QString::fromStdString(f_hvtable.SlotInfo()[index.row()].phm.name());
-        case 4:
-		return int(f_hvtable.SlotInfo()[index.row()].hvchannel.idx());
-        case 5:
-		return f_hvtable.HVConfigEntries()[index.row()].HV();
-        case 6:
+	case 4:
 		return f_hvtable.SlotInfo()[index.row()].phm.max_hv();
-        }
+	case 5:
+		return int(f_hvtable.SlotInfo()[index.row()].hvchannel.idx());
+        case 6:
+		return f_hvtable.HVConfigEntries()[index.row()].HV();
+	case 7:
+		return f_hvtable.HVMon()[index.row()];
+	}
     }
     return QVariant::Invalid;
 }
@@ -167,11 +169,13 @@ QVariant HVTableModel::headerData(int section, Qt::Orientation orientation, int 
 			case 3:
 				return ("PHM");
 			case 4:
-				return ("idx");
+				return ("MAX HV");
 			case 5:
-				return ("HV");
+				return ("idx ch");
 			case 6:
-				return ("MAX");
+				return ("HV set");
+			case 7:
+				return ("HV mon");
 		}
 	}
 	return QVariant();
@@ -180,32 +184,24 @@ QVariant HVTableModel::headerData(int section, Qt::Orientation orientation, int 
 bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, int role){
     if (role == Qt::EditRole){
         switch(index.column()){
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 6:
-		return false;
-        case 5:
-		double new_hv=value.toInt();
-		if(new_hv*f_hvtable.SlotInfo()[index.row()].phm.max_hv()<0)new_hv*=-1.0;
-		return f_hvtable.SetHV(index.row(),new_hv);
-        }
+        case 6:{
+			double new_hv=value.toInt();
+			if(new_hv*f_hvtable.SlotInfo()[index.row()].phm.max_hv()<0)new_hv*=-1.0;
+			return f_hvtable.SetHV(index.row(),new_hv);
+		}
+	default:{
+			return false;
+		}
+	}
     }
     return true;
 }
 Qt::ItemFlags HVTableModel::flags(const QModelIndex & index)const{
     switch(index.column()){
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
     case 6:
-        return Qt::ItemIsEnabled ;
-    case 5:
         return Qt::ItemIsSelectable |  Qt::ItemIsEditable | Qt::ItemIsEnabled ;
+    default:
+	    return Qt::ItemIsEnabled ;
     }
 }
 HVAdjust::HVTable&HVTableModel::Data(){

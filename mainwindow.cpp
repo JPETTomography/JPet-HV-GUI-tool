@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QTextStream>
+#include <QTimer>
 #include <JPetData/data_access.h>
 #include <JPetData/Detectors.h>
 #include <JPetData/HVconfig.h>
@@ -105,12 +106,14 @@ void MainWindow::HVTableUpdate(){
         ui->curentconfig->setModel(table_model.get());
     }else ui->curentconfig->setModel(nullptr);
     ui->curentconfig->setColumnWidth(0,50);
-    ui->curentconfig->setColumnWidth(1,80);
-    ui->curentconfig->setColumnWidth(2,60);
-    ui->curentconfig->setColumnWidth(3,80);
+    ui->curentconfig->setColumnWidth(1,70);
+    ui->curentconfig->setColumnWidth(2,70);
+    ui->curentconfig->setColumnWidth(3,70);
     ui->curentconfig->setColumnWidth(4,70);
-    ui->curentconfig->setColumnWidth(5,90);
-    ui->curentconfig->setColumnWidth(6,80);
+    ui->curentconfig->setColumnWidth(5,70);
+    ui->curentconfig->setColumnWidth(6,70);
+    ui->curentconfig->setColumnWidth(7,70);
+    on_timer_update();
 }
 
 void MainWindow::on_pushButton_clicked(){
@@ -159,7 +162,6 @@ void MainWindow::on_pushButton_3_clicked(){
                 table_model->Data().SetHV(index,hv);
         }
         file.close();
-        ui->curentconfig->setModel(table_model.get());
     }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_pushButton_8_clicked(){
@@ -174,6 +176,7 @@ void MainWindow::on_pushButton_8_clicked(){
 			double hv=table_model->Data().HardwareHV()[i];
 			table_model->Data().SetHV(i,hv);
 		}
+		table_model->Data().read_hardware();
 	}
 }
 
@@ -183,8 +186,10 @@ void MainWindow::on_pushButton_6_clicked(){
 		(ui->frames->selectionModel()->currentIndex().isValid())&&
 		(ui->Setups->selectionModel()->currentIndex().isValid())&&
 		(ui->configs->selectionModel()->currentIndex().isValid())
-	)
+	){
 		table_model->Data().SynchroHardwarewithDB();
+		table_model->Data().read_hardware();
+	}
 }
 void MainWindow::on_pushButton_7_clicked(){
 	if(
@@ -192,6 +197,19 @@ void MainWindow::on_pushButton_7_clicked(){
 		(ui->frames->selectionModel()->currentIndex().isValid())&&
 		(ui->Setups->selectionModel()->currentIndex().isValid())&&
 		(ui->configs->selectionModel()->currentIndex().isValid())
-	)
+	){
 		table_model->Data().SwitchOffHardware();
+		table_model->Data().read_hardware();
+	}
+}
+void MainWindow::on_timer_update(){
+	if(
+		(frames)&&(setups)&&(configs)&&
+		(ui->frames->selectionModel()->currentIndex().isValid())&&
+		(ui->Setups->selectionModel()->currentIndex().isValid())&&
+		(ui->configs->selectionModel()->currentIndex().isValid())
+	){
+		table_model->Data().read_hardware();
+		QTimer::singleShot(1000,this,SLOT(on_timer_update()));
+	}
 }

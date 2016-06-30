@@ -40,6 +40,7 @@ private slots:
     void on_pushButton_6_clicked();
     void on_pushButton_7_clicked();
     void on_pushButton_8_clicked();
+    void on_timer_update();
     
 private:
     Ui::MainWindow *ui;
