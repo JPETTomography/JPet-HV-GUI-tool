@@ -25,7 +25,7 @@ QVariant ConfigsModel::headerData(int section, Qt::Orientation orientation, int 
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 		switch (section) {
 			case 0:
-				return ("HV configuration");
+				return ("Name");
 		}
 	}
 	return QVariant();
@@ -114,7 +114,7 @@ QVariant FramesModel::headerData(int section, Qt::Orientation orientation, int r
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 		switch (section) {
 			case 0:
-				return ("Frame");
+				return ("Name");
 		}
 	}
 	return QVariant();
@@ -173,7 +173,7 @@ QVariant HVTableModel::headerData(int section, Qt::Orientation orientation, int 
 			case 5:
 				return ("idx ch");
 			case 6:
-				return ("HV set");
+				return ("HV SET");
 			case 7:
 				return ("HV mon");
 		}
@@ -201,7 +201,7 @@ Qt::ItemFlags HVTableModel::flags(const QModelIndex & index)const{
     case 6:
         return Qt::ItemIsSelectable |  Qt::ItemIsEditable | Qt::ItemIsEnabled ;
     default:
-	    return Qt::ItemIsEnabled ;
+	    return Qt::ItemIsEnabled;
     }
 }
 HVAdjust::HVTable&HVTableModel::Data(){

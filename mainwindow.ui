@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>J-PET HV manager</string>
+   <string>J-PET HV manager GUI tool</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QGroupBox" name="groupBox">
@@ -38,11 +38,11 @@
       <x>0</x>
       <y>380</y>
       <width>421</width>
-      <height>281</height>
+      <height>271</height>
      </rect>
     </property>
     <property name="title">
-     <string>HV configurations in selected setup</string>
+     <string>HV CONFIGURATIONS for selected setup</string>
     </property>
     <widget class="QTableView" name="configs">
      <property name="geometry">
@@ -50,7 +50,7 @@
        <x>0</x>
        <y>20</y>
        <width>421</width>
-       <height>221</height>
+       <height>201</height>
       </rect>
      </property>
      <property name="alternatingRowColors">
@@ -60,24 +60,46 @@
     <widget class="QPushButton" name="pushButton_4">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>240</y>
-       <width>61</width>
+       <x>280</x>
+       <y>230</y>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
      <property name="text">
-      <string>Add</string>
+      <string>Add configuration</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="new_config_name">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>240</y>
-       <width>361</width>
+       <x>120</x>
+       <y>230</y>
+       <width>161</width>
        <height>32</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>-10</x>
+       <y>230</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>New config name</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </widget>
@@ -91,7 +113,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Frames</string>
+     <string>FRAMES</string>
     </property>
     <widget class="QTableView" name="frames">
      <property name="geometry">
@@ -117,7 +139,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Setups in selected frame</string>
+     <string>SETUPS of selected frame</string>
     </property>
     <widget class="QTableView" name="Setups">
      <property name="geometry">
@@ -137,9 +159,9 @@
     <property name="geometry">
      <rect>
       <x>420</x>
-      <y>0</y>
+      <y>30</y>
       <width>581</width>
-      <height>701</height>
+      <height>671</height>
      </rect>
     </property>
     <property name="title">
@@ -151,7 +173,7 @@
        <x>0</x>
        <y>30</y>
        <width>581</width>
-       <height>581</height>
+       <height>551</height>
       </rect>
      </property>
      <property name="alternatingRowColors">
@@ -162,23 +184,33 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>620</y>
-       <width>121</width>
-       <height>31</height>
+       <y>590</y>
+       <width>151</width>
+       <height>41</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
+     </property>
      <property name="text">
-      <string>Remove this config</string>
+      <string>Remove this configuration</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButton_2">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>660</y>
-       <width>131</width>
-       <height>34</height>
+       <x>170</x>
+       <y>590</y>
+       <width>111</width>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Export to TXT</string>
@@ -187,11 +219,16 @@
     <widget class="QPushButton" name="pushButton_3">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>620</y>
-       <width>131</width>
-       <height>34</height>
+       <x>170</x>
+       <y>630</y>
+       <width>111</width>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Import from TXT</string>
@@ -200,11 +237,18 @@
     <widget class="QPushButton" name="pushButton_6">
      <property name="geometry">
       <rect>
-       <x>440</x>
-       <y>620</y>
-       <width>131</width>
+       <x>300</x>
+       <y>590</y>
+       <width>161</width>
        <height>34</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
      </property>
      <property name="text">
       <string>Send to hardware</string>
@@ -213,11 +257,16 @@
     <widget class="QPushButton" name="pushButton_7">
      <property name="geometry">
       <rect>
-       <x>440</x>
-       <y>660</y>
-       <width>131</width>
+       <x>470</x>
+       <y>590</y>
+       <width>101</width>
        <height>34</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Switch off the HV</string>
@@ -226,11 +275,16 @@
     <widget class="QPushButton" name="pushButton_8">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>620</y>
+       <x>300</x>
+       <y>630</y>
        <width>161</width>
-       <height>34</height>
+       <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>8</pointsize>
+      </font>
      </property>
      <property name="text">
       <string>Import from hardware</string>
@@ -241,13 +295,42 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>663</y>
-      <width>411</width>
+      <y>660</y>
+      <width>401</width>
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
     <property name="text">
      <string>Commit changes to database</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>420</x>
+      <y>0</y>
+      <width>581</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Starting new measurement please create new configuration</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

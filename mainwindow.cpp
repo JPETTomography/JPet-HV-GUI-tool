@@ -106,18 +106,23 @@ void MainWindow::HVTableUpdate(){
         ui->curentconfig->setModel(table_model.get());
     }else ui->curentconfig->setModel(nullptr);
     ui->curentconfig->setColumnWidth(0,50);
-    ui->curentconfig->setColumnWidth(1,70);
-    ui->curentconfig->setColumnWidth(2,70);
-    ui->curentconfig->setColumnWidth(3,70);
-    ui->curentconfig->setColumnWidth(4,70);
-    ui->curentconfig->setColumnWidth(5,70);
-    ui->curentconfig->setColumnWidth(6,70);
-    ui->curentconfig->setColumnWidth(7,70);
+    ui->curentconfig->setColumnWidth(1,60);
+    ui->curentconfig->setColumnWidth(2,50);
+    ui->curentconfig->setColumnWidth(3,60);
+    ui->curentconfig->setColumnWidth(4,80);
+    ui->curentconfig->setColumnWidth(5,50);
+    ui->curentconfig->setColumnWidth(6,80);
+    ui->curentconfig->setColumnWidth(7,80);
     on_timer_update();
 }
 
 void MainWindow::on_pushButton_clicked(){
-    Source->Commit();
+	if(Source->changed()){
+		Source->Commit();
+		QMessageBox::question( this, "J-PET HV manager",tr("Changes have been commited to the database"),QMessageBox::Ok);
+	}else{
+		QMessageBox::question( this, "J-PET HV manager",tr("There are no changes to commit"),QMessageBox::Ok);
+	}
 }
 void MainWindow::closeEvent(QCloseEvent*closer){
     if(Source->changed()){
@@ -125,8 +130,11 @@ void MainWindow::closeEvent(QCloseEvent*closer){
                                         tr("You have made some changes. Apply them?\n"),
                                         QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
                                         QMessageBox::Yes);
-        if(QMessageBox::Cancel==resBtn)closer->ignore();
-        else if(QMessageBox::Yes==resBtn) Source->Commit();
+        if(QMessageBox::Cancel==resBtn) closer->ignore();
+        else{
+		if(QMessageBox::Yes==resBtn)on_pushButton_clicked();
+		else QMessageBox::question( this, "J-PET HV manager",tr("Changes have been discarded"),QMessageBox::Ok);
+	}
     }else closer->accept();
 }
 
