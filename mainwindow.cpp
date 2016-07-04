@@ -66,14 +66,15 @@ void MainWindow::SetupSelect(){
 void MainWindow::on_pushButton_4_clicked(){
     if((frames)&&(setups)&&(configs)){
         if(ui->new_config_name->text()==""){
-            QMessageBox::question(this,"File error","Config must have name",QMessageBox::Ok,QMessageBox::NoButton);
+		QMessageBox::question(this,"HV tool","New configuration must have name",QMessageBox::Ok,QMessageBox::NoButton);
         }else{
-            configs->AddItem(ui->new_config_name->text());
-            ui->new_config_name->setText("");
-            SetupSelect();
-        }
-    }else QMessageBox::question(this,"File error","Please select setup",QMessageBox::Ok,QMessageBox::NoButton);
+		configs->AddItem(ui->new_config_name->text());
+		ui->new_config_name->setText("");
+		SetupSelect();
+	}
+    }else QMessageBox::question(this,"HV tool","Please select frame and setup for creating new configuration",QMessageBox::Ok,QMessageBox::NoButton);
 }
+
 void MainWindow::on_pushButton_5_clicked(){
     if(
             (frames)&&(setups)&&(configs)&&
@@ -81,9 +82,13 @@ void MainWindow::on_pushButton_5_clicked(){
             (ui->Setups->selectionModel()->currentIndex().isValid())&&
             (ui->configs->selectionModel()->currentIndex().isValid())
     ){
-            table_model->Data().clear();
-            configs->Delete(ui->configs->selectionModel()->currentIndex().row());
-            SetupSelect();
+	    QMessageBox::StandardButton resBtn = QMessageBox::question( this, "HV tool",
+		"You are going to delete curent HV configuration. The operation cannot be canceled. Continue?",QMessageBox::No|QMessageBox::Yes,QMessageBox::Yes);
+	    if(QMessageBox::Yes==resBtn){
+		    table_model->Data().clear();
+		    configs->Delete(ui->configs->selectionModel()->currentIndex().row());
+		    SetupSelect();
+	    }
     }else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 
@@ -117,23 +122,23 @@ void MainWindow::HVTableUpdate(){
 void MainWindow::on_pushButton_clicked(){
 	if(Source->changed()){
 		Source->Commit();
-		QMessageBox::question( this, "J-PET HV manager",tr("Changes have been commited to the database"),QMessageBox::Ok);
+		QMessageBox::question( this, "HV tool","Changes have been commited to the database",QMessageBox::Ok);
 	}else{
-		QMessageBox::question( this, "J-PET HV manager",tr("There are no changes to commit"),QMessageBox::Ok);
+		QMessageBox::question( this, "HV tool","There are no changes to commit",QMessageBox::Ok);
 	}
 }
 void MainWindow::closeEvent(QCloseEvent*closer){
-    if(Source->changed()){
-        QMessageBox::StandardButton resBtn = QMessageBox::question( this, "J-PET HV manager",
-                                        tr("You have made some changes. Apply them?\n"),
-                                        QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
-                                        QMessageBox::Yes);
-        if(QMessageBox::Cancel==resBtn) closer->ignore();
-        else{
-		if(QMessageBox::Yes==resBtn)on_pushButton_clicked();
-		else QMessageBox::question( this, "J-PET HV manager",tr("Changes have been discarded"),QMessageBox::Ok);
-	}
-    }else closer->accept();
+	if(Source->changed()){
+		QMessageBox::StandardButton resBtn = QMessageBox::question( this, "HV tool",
+			"You have made some changes. Apply them?",
+			QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes,
+			QMessageBox::Yes);
+		if(QMessageBox::Cancel==resBtn) closer->ignore();
+		else{
+			if(QMessageBox::Yes==resBtn)on_pushButton_clicked();
+			else QMessageBox::question( this, "J-PET HV manager",tr("Changes have been discarded"),QMessageBox::Ok);
+		}
+	}else closer->accept();
 }
 
 void MainWindow::on_pushButton_2_clicked(){
@@ -148,7 +153,7 @@ void MainWindow::on_pushButton_2_clicked(){
 		if(file){
 			SaveHV(file,table_model->Data());
 			file.close();
-		}else QMessageBox::question(this,"File error","File cannot be created",QMessageBox::Ok,QMessageBox::NoButton);
+		}else QMessageBox::question(this,"HV tool","File cannot be created",QMessageBox::Ok,QMessageBox::NoButton);
 	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_pushButton_3_clicked(){
@@ -163,7 +168,7 @@ void MainWindow::on_pushButton_3_clicked(){
 		if(file){
 			ReadHV(file,table_model->Data());
 			file.close();
-		}else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
+		}else QMessageBox::question(this,"HV tool","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
 	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_pushButton_8_clicked(){
