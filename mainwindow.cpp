@@ -1,10 +1,8 @@
 #include <string>
-#include <iostream>
+#include <fstream>
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QFileDialog>
-#include <QFile>
-#include <QTextStream>
 #include <QTimer>
 #include <JPetData/data_access.h>
 #include <JPetData/Detectors.h>
@@ -86,7 +84,7 @@ void MainWindow::on_pushButton_5_clicked(){
             table_model->Data().clear();
             configs->Delete(ui->configs->selectionModel()->currentIndex().row());
             SetupSelect();
-    }
+    }else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 
 void MainWindow::HVTableUpdate(){
@@ -139,38 +137,34 @@ void MainWindow::closeEvent(QCloseEvent*closer){
 }
 
 void MainWindow::on_pushButton_2_clicked(){
-    QFile file(QFileDialog::getSaveFileName(this,"Export HV settings to file","","*.txt"));
-    if(file.open(QIODevice::ReadWrite)){
-            QTextStream stream(&file);
-            for(size_t i=0;i<table_model->Data().SlotInfo().size();i++)
-                stream<<table_model->Data().SlotInfo()[i].hvpm.side()<<"\t"
-                     <<table_model->Data().SlotInfo()[i].layer.name().c_str()<<"\t"
-                    <<table_model->Data().SlotInfo()[i].slot.name().c_str()<<"\t"
-                  <<table_model->Data().HVConfigEntries()[i].HV()<<endl;
-            file.close();
-    }else QMessageBox::question(this,"File error","File cannot be created",QMessageBox::Ok,QMessageBox::NoButton);
+	if(
+		(frames)&&(setups)&&(configs)&&
+		(ui->frames->selectionModel()->currentIndex().isValid())&&
+		(ui->Setups->selectionModel()->currentIndex().isValid())&&
+		(ui->configs->selectionModel()->currentIndex().isValid())
+	){
+		ofstream file;
+		file.open(QFileDialog::getSaveFileName(this,"Export HV settings to file","","*.txt").toStdString());
+		if(file){
+			SaveHV(file,table_model->Data());
+			file.close();
+		}else QMessageBox::question(this,"File error","File cannot be created",QMessageBox::Ok,QMessageBox::NoButton);
+	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_pushButton_3_clicked(){
-    QFile file(QFileDialog::getOpenFileName(this,"Import HV settings to file","","*.txt"));
-    if(file.open(QIODevice::ReadOnly)){
-        QTextStream stream(&file);
-        uint side;
-        QString layer,slot;
-        double hv;
-        while(!(stream>>side>>layer>>slot>>hv).atEnd()){
-            int index=-1;
-            for(int i=0;i<table_model->Data().SlotInfo().size();i++)
-            if(
-                (table_model->Data().SlotInfo()[i].hvpm.side()==side)&&
-                (table_model->Data().SlotInfo()[i].layer.name()==layer.toStdString())&&
-                (table_model->Data().SlotInfo()[i].slot.name()==slot.toStdString())
-            )
-                index=i;
-            if(index>=0)
-                table_model->Data().SetHV(index,hv);
-        }
-        file.close();
-    }else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
+	if(
+		(frames)&&(setups)&&(configs)&&
+		(ui->frames->selectionModel()->currentIndex().isValid())&&
+		(ui->Setups->selectionModel()->currentIndex().isValid())&&
+		(ui->configs->selectionModel()->currentIndex().isValid())
+	){
+		ifstream file;
+		file.open(QFileDialog::getOpenFileName(this,"Import HV settings to file","","*.txt").toStdString());
+		if(file){
+			ReadHV(file,table_model->Data());
+			file.close();
+		}else QMessageBox::question(this,"File error","File cannot be opened",QMessageBox::Ok,QMessageBox::NoButton);
+	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_pushButton_8_clicked(){
 	if(
@@ -185,7 +179,7 @@ void MainWindow::on_pushButton_8_clicked(){
 			table_model->Data().SetHV(i,hv);
 		}
 		table_model->Data().read_hardware();
-	}
+	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 
 void MainWindow::on_pushButton_6_clicked(){
@@ -197,7 +191,7 @@ void MainWindow::on_pushButton_6_clicked(){
 	){
 		table_model->Data().SynchroHardwarewithDB();
 		table_model->Data().read_hardware();
-	}
+	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_pushButton_7_clicked(){
 	if(
@@ -208,7 +202,7 @@ void MainWindow::on_pushButton_7_clicked(){
 	){
 		table_model->Data().SwitchOffHardware();
 		table_model->Data().read_hardware();
-	}
+	}else QMessageBox::question(this,"HV tool","This function is available if configuration is selected",QMessageBox::Ok,QMessageBox::NoButton);
 }
 void MainWindow::on_timer_update(){
 	if(
