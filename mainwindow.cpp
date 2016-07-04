@@ -217,6 +217,7 @@ void MainWindow::on_timer_update(){
 		(ui->configs->selectionModel()->currentIndex().isValid())
 	){
 		table_model->Data().read_hardware();
+		ui->curentconfig->resizeColumnsToContents();
 		QTimer::singleShot(1000,this,SLOT(on_timer_update()));
 	}
 }
