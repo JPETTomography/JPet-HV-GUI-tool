@@ -185,7 +185,7 @@ bool HVTableModel::setData(const QModelIndex & index, const QVariant & value, in
     if (role == Qt::EditRole){
         switch(index.column()){
         case 6:{
-			double new_hv=value.toInt();
+			double new_hv=value.toDouble();
 			if(new_hv*f_hvtable.SlotInfo()[index.row()].phm.max_hv()<0)new_hv*=-1.0;
 			return f_hvtable.SetHV(index.row(),new_hv);
 		}
