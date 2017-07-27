@@ -1,3 +1,6 @@
-[submodule "JPET-HV-adjust"]
-	path = JPET-HV-adjust
-	url = https://github.com/JPETTomography/JPET-HV-adjust.git
+[submodule "math_h"]
+	path = math_h
+	url = https://github.com/alexkernphysiker/math_h.git
+[submodule "JPET-Data"]
+	path = JPET-Data
+	url = https://github.com/alexkernphysiker/JPET-Data.git

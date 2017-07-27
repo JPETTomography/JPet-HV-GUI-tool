@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 2.6)
 project(JPET-HV-GUI-tool)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-
+add_subdirectory(math_h)
 add_subdirectory(JPET-HV-adjust)
+include_directories(${MATH_H_INC})
 include_directories(${JPET_DATA_INC})
 include_directories(${QT_INCLUDE_DIR})
 link_directories(${QT_LIBRARY_DIR} ${JPET_DATA_LIBDIR})
