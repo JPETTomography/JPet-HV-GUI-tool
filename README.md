@@ -15,7 +15,7 @@ How to compile
 	
 	git submodule update --init --recursive
 	
-	cmake .
+	cmake . -DHVLIBDIR=/path/to/Silvermedia/lib/HV/
 	
 	make
 
